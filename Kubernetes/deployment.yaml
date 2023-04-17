@@ -24,12 +24,11 @@ kind: Service
 metadata:
   name: my-service
 spec:
-  selector:
-    app: my-app
   ports:
-  - name: http
-    targetPort: 1337
-  type: LoadBalancer
+    - port: 1337
+      protocol: TCP
+    selector:
+      app: my-service
 
 
 
