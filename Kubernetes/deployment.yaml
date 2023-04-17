@@ -7,11 +7,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: my-deployment
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-deployment
     spec:
       containers:
       - name: first-container
@@ -22,13 +22,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: my-deployment
 spec:
   ports:
   - port: 1337
     protocol: TCP
   selector:
-    app: my-service
+    app: my-deployment
 
 
 

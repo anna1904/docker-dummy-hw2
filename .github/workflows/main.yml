@@ -79,7 +79,7 @@ jobs:
           sleep 5 && kubectl get pod -A
       - name: Print pods
         run: |
-          kubectl wait --for=condition=available --timeout=90s Kubernetes/deployment
+          kubectl wait --for=condition=available --timeout=90s deployment/my-deployment
       - name: Print pods
         run: |
           sleep 5 && kubectl get pod -A
