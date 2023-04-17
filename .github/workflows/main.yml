@@ -29,7 +29,5 @@ jobs:
           run: |
             docker buildx build \
               --tag ${{ secrets.DOCKERHUB_USERNAME }}/test-jupyter:buildx-latest \
-              --platform linux/amd64,linux/arm64 
-              --push \ 
-              ${GITHUB_WORKSPACE}/jupyter-app
+              --platform linux/amd64,linux/arm64 /jupyter-app/
             
