@@ -25,10 +25,10 @@ metadata:
   name: my-service
 spec:
   ports:
-    - port: 1337
-      protocol: TCP
-    selector:
-      app: my-service
+  - port: 1337
+    protocol: TCP
+  selector:
+    app: my-service
 
 
 
