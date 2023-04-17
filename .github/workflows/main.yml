@@ -6,7 +6,7 @@ on:
       - "main"
 
 jobs:
-  build:
+  build-jupyter-test:
     runs-on: ubuntu-latest
     steps:
       -
@@ -29,4 +29,86 @@ jobs:
           run: |
             docker buildx build \
               --tag ${{ secrets.DOCKERHUB_USERNAME }}/test-jupyter:buildx-latest \
-              --platform linux/amd64,linux/arm64 .
+              --platform linux/amd64,linux/arm64 ./jupyter-app
+      -   name: push the image
+          run: |
+            docker buildx push ${{ secrets.DOCKERHUB_USERNAME }}/test-jupyter:buildx-latest ./jupyter-app
+
+  buildx-app-ml:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+      -
+        name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: ./ml-app
+          file: ./ml-app/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildx-latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildcache,mode=max
+
+  deployment-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create k8s cluster
+        uses: helm/kind-action@v1.4.0
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy application
+        run: |
+          kubectl create -f Kubernetes/deployment.yaml
+      - name: Print pods
+        run: |
+          sleep 5 && kubectl get pod -A
+#      - name: Print pods
+#        run: |
+#          kubectl wait --for=condition=available --timeout=90s deployment/my-deployment #can run it locally, but here "my-deployment" not found
+  job-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Install and configure KinD
+        run: |
+          GO111MODULE="on" go get sigs.k8s.io/kind@v0.11.1
+          sudo mv $(go env GOPATH)/bin/kind /usr/local/bin/
+          kind create cluster
+      - name: Set up kubectl
+        run: |
+          kubectl cluster-info
+          kubectl config use-context kind-kind
+      - name: Deploy application
+        run: |
+          kubectl create -f Kubernetes/jobs.yaml
+      - name: Print pods
+        run: |
+          sleep 5 && kubectl get pod -A
+      - name: Clean up
+        run: |
+          kind delete cluster
+
+    
+            
