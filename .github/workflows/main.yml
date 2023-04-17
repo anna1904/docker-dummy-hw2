@@ -61,4 +61,27 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildx-latest
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-ml:buildcache,mode=max
+
+  deployment-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create k8s cluster
+        uses: helm/kind-action@v1.4.0
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy application
+        run: |
+          kubectl create -f Kubernetes/deployment.yaml
+      - name: Print pods
+        run: |
+          sleep 5 && kubectl get pod -A
+      - name: Print pods
+        run: |
+          kubectl wait --for=condition=available --timeout=90s Kubernetes/deployment
+      - name: Print pods
+        run: |
+          sleep 5 && kubectl get pod -A
+    
             
