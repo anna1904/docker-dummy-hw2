@@ -1,0 +1,35 @@
+# Deployment definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-deployment
+  template:
+    metadata:
+      labels:
+        app: my-deployment
+    spec:
+      containers:
+      - name: first-container
+        image: anko47/test-jupyter:buildx-latest
+        # Add other container configuration as needed
+
+# Service definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-deployment
+spec:
+  ports:
+  - port: 1337
+    protocol: TCP
+  selector:
+    app: my-deployment
+
+
+
+

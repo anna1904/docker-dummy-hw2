@@ -1,0 +1,34 @@
+#---
+## Pod definition
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: my-pod
+#spec:
+#  containers:
+#  - name: first-container
+#    image: anko47/test-jupyter:buildx-latest
+#    ports:
+#      - containerPort: 80
+
+# Job definition
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-jobs
+spec:
+  parallelism: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: jupyter-container
+          image: anko47/test-jupyter:buildx-latest
+        - name: app-ml-container
+          image: anko47/app-ml:buildx-latest
+
+
+
+
+
+
