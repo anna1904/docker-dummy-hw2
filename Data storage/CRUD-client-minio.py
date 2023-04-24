@@ -13,39 +13,43 @@ class Minio_client():
         except:
             print("Not able to connect minio / {}".format(Exception))
 
-    def upload_object(self, bucket_name, file_path: Path):
+    def upload_object(self, bucket_name, object_name, file_path: Path):
         try:
             bucket = self.minioClient.bucket_exists(bucket_name)
             if bucket:
-                self.minioClient.fput_object(bucket_name, file_path.name, file_path)
-                print("Dataset/Model has been sucessfully saved in {}".format(bucket_name))
+                self.minioClient.fput_object(bucket_name, object_name, file_path)
+                print("File has been sucessfully saved in {}".format(bucket_name))
         except:
-            print('Cannot upload an object')
-    def get_object(self, bucket_name, file_path: Path):
+            print("Not able to upload file / {}".format(Exception))
+    def get_object(self, bucket_name, object_name, file_path: Path):
         try:
             bucket = self.minioClient.bucket_exists(bucket_name)
             if bucket:
-                self.minioClient.fget_object(bucket_name, file_path.name, file_path)
-                print("Dataset/Model has been sucessfully saved in {}".format(bucket_name))
+                self.minioClient.fget_object(bucket_name, object_name, file_path)
+                print("File has been sucessfully get from {}".format(bucket_name))
         except:
-            print('Cannot upload an object')
+            print("Cannot upload an object/ {}".format(Exception))
+    def remove_object(self, bucket_name, object_name):
+        try:
+            bucket = self.minioClient.bucket_exists(bucket_name)
+            if bucket:
+                self.minioClient.remove_object(bucket_name, object_name)
+                print("File has been sucessfully deleted from {}".format(bucket_name))
+        except:
+            print("Cannot delete an object/ {}".format(Exception))
 
-    # def delete_object(self, bucket_name, file_path: Path):
-    #     try:
-    #         bucket = self.minioClient.bucket_exists(bucket_name)
-    #         if bucket:
-    #             self.minioClient.fput_object(bucket_name, file_path.name, file_path)
-    #             print("Dataset/Model has been sucessfully saved in {}".format(bucket_name))
-    #     except:
-    #         print('Cannot upload an object')
-    # def update_object(self, bucket_name, file_path: Path):
-    #     try:
-    #         bucket = self.minioClient.bucket_exists(bucket_name)
-    #         if bucket:
-    #             self.minioClient.fput_object(bucket_name, file_path.name, file_path)
-    #             print("Dataset/Model has been sucessfully saved in {}".format(bucket_name))
-    #     except:
-    #         print('Cannot upload an object')
+    #As objects are immutable in S3, I first delete the object and upload the new version with the same name
+    def update_object(self, bucket_name, object_name, file_path):
+        try:
+            bucket = self.minioClient.bucket_exists(bucket_name)
+            if bucket:
+                self.minioClient.remove_object(bucket_name, object_name)
+                self.minioClient.fput_object(bucket_name, object_name, file_path)
+                print(f"File {object_name} has been sucessfully updated")
+        except:
+            print("Cannot update an object/ {}".format(Exception))
+
+
 
 
 
