@@ -5,6 +5,7 @@ https://min.io/docs/minio/macos/index.html
 For arm42:
 #### MNIO:
 
+1. Install minio
 ```shell
     brew install minio/stable/minio
 ```
@@ -26,11 +27,11 @@ Console: http://192.168.1.25:55481 http://127.0.0.1:55481
 RootUser: minioadmin
 RootPass: minioadmin
 ```
-Run the local server from the address: http://127.0.0.1:9000 and log in with credintials
+2. Run the local server from the address: http://127.0.0.1:9000 and log in with credintials
 (MinIO automatically redirects browser access to the MinIO Console)
 
 
-Now you can create buckets, upload your files there and create service accounts
+3. Now you can create buckets, upload your files there and create service accounts
 
 ### Install client
 
@@ -56,31 +57,37 @@ docker run \
    -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
    quay.io/minio/minio server /data --console-address ":9090"
 ```
-
+ 2. Log in and the same as with local development.
 # KUBERNETES
 
 https://min.io/docs/minio/kubernetes/upstream/index.html
+and standalone: https://github.com/kubernetes/examples/tree/master/staging/storage/minio#minio-standalone-server-deployment
 
 1. Download yaml with kubernetes setting
 ```angular2html
 curl https://raw.githubusercontent.com/minio/docs/master/source/extra/examples/minio-dev.yaml -O
+
+or create own by standalone yaml with PVC
 ```
 2. Create cluster 
 ```
-kind create cluster --name ml-in-production-course-week-1
+kind create cluster --name hw3_cluster
 ```
-3. Apply yaml
+3. Check containers ```k9s -A```
+4. Apply yaml
 ```angular2html
-kubectl apply -f minio-dev.yaml
+kubectl apply -f minio-standalone.yaml
 --------------
-namespace/minio-dev created
 pod/minio created
+persistentvolumeclaim/minio-pv-claim created
 ```
-4. Verify the state
+5.Verify the state
 ```angular2html
 kubectl get pods -n minio-dev
 ```
 
-5. Use the kubectl port-forward command to temporarily forward traffic from the MinIO pod to the local machine
+6.Use the kubectl port-forward command to temporarily forward traffic from the MinIO pod to the local machine
+```kubectl port-forward --address=0.0.0.0 pod/minio 9000 9090```
+
 
 
