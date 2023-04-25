@@ -25,10 +25,12 @@ class Minio_client():
         try:
             bucket = self.minioClient.bucket_exists(bucket_name)
             if bucket:
-                self.minioClient.fget_object(bucket_name, object_name, file_path)
-                print("File has been sucessfully get from {}".format(bucket_name))
-        except:
-            print("Cannot upload an object/ {}".format(Exception))
+                result = self.minioClient.fget_object(bucket_name, object_name, file_path)
+                print("res:", result)
+                print(f"File {result.object_name} has been sucessfully get from {bucket_name}")
+                return result
+        except Exception as e:
+            print("Cannot upload an object/ {}".format(e))
     def remove_object(self, bucket_name, object_name):
         try:
             bucket = self.minioClient.bucket_exists(bucket_name)
@@ -48,6 +50,10 @@ class Minio_client():
                 print(f"File {object_name} has been sucessfully updated")
         except:
             print("Cannot update an object/ {}".format(Exception))
+c = Minio_client()
+c.upload_object('mybucket','qw', 'qw.txt' )
+c.get_object('mybucket','qw', 'qw.txt' )
+
 
 
 
