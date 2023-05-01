@@ -2,3 +2,5 @@
     remote = storage
 ['remote "storage"']
     url = s3://war-images
+    access_key_id = AKIAQ7VPJZSJ5EDBR46Y
+    secret_access_key = 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
