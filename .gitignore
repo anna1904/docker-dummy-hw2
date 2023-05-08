@@ -1,1 +1,4 @@
 .idea
+/classification/classification/my_classification_model/
+/classification/classification/wandb/
+/Labeling/

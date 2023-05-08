@@ -22,17 +22,9 @@ card = ModelCard.from_template(
     training_data="./train.py",
     citation="cite ViT: Vision Transfomer article ",
     authors=["Anna Konovalenko"],
-    codebase="https://github.com/your_username/mnist-image-classification",
+    codebase="",
     version="v1.0",
 )
-
-# Add artifacts to ModelCard
-with wandb.init() as _:
-    run = wandb.run
-    model_artifact = wandb.Artifact("model", type="model", description="MNIST image classification model")
-    model_artifact.add_dir("my_classification_model")
-    run.log_artifact(model_artifact)
-    card.artifacts = [{"artifactName": model_artifact.name, "type": model_artifact.type}]
 
 # Save ModelCard
 card.save("model_card.md")

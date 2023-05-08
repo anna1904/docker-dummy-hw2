@@ -50,6 +50,10 @@ def process_dataset(food):
 
 def compute_metrics(eval_pred):
     accuracy = evaluate.load("accuracy")
+    precision = evaluate.load('precision')
+    recall = evaluate.load('recall')
+    f1 = evaluate.load('f1')
+
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
     acc = accuracy.compute(predictions=predictions, references=labels)
@@ -72,7 +76,7 @@ def training():
 
     wandb.init(
         project="classification_example",
-        name="my-first-run",
+        name="sweep-3",
         config={
             "epochs": 0.1,
         })
@@ -96,7 +100,8 @@ def training():
         eval_steps=1,  # we will perform evaluation every 1 steps
         eval_accumulation_steps=1,  # report evaluation results after each step
         load_best_model_at_end=True,
-        save_steps = 1
+        save_steps = 1,
+        do_eval=True
     )
 
     trainer = Trainer(
@@ -110,5 +115,3 @@ def training():
     )
     wandb.log({'constant': 0.9})
     trainer.train()
-
-training()

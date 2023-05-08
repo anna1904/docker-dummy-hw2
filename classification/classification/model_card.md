@@ -1,10 +1,15 @@
 ---
 language: en
-license: mit
-library_name: keras
+license: MIT
+name: MNIST Image Classification
+model_type: image-classification
+dataset_tags:
+- mnist
+model_tags:
+- vit
 ---
 
-# Model Card for my-cool-model
+# Model Card for mnist-image-classification-vit
 
 <!-- Provide a quick summary of what the model is/does. -->
 
@@ -16,20 +21,20 @@ library_name: keras
 
 <!-- Provide a longer summary of what this model is. -->
 
-this model does this and that
+Image classification model trained on the MNIST dataset using the ViT (Vision Transformer) architecture.
 
-- **Developed by:** Nate Raw
+- **Developed by:** [More Information Needed]
 - **Shared by [optional]:** [More Information Needed]
-- **Model type:** [More Information Needed]
+- **Model type:** image-classification
 - **Language(s) (NLP):** en
-- **License:** mit
+- **License:** MIT
 - **Finetuned from model [optional]:** [More Information Needed]
 
 ### Model Sources [optional]
 
 <!-- Provide the basic links for the model. -->
 
-- **Repository:** https://github.com/huggingface/huggingface_hub
+- **Repository:** [More Information Needed]
 - **Paper [optional]:** [More Information Needed]
 - **Demo [optional]:** [More Information Needed]
 
@@ -79,7 +84,7 @@ Use the code below to get started with the model.
 
 <!-- This should link to a Data Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
 
-[More Information Needed]
+./train.py
 
 ### Training Procedure 
 
