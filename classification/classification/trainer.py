@@ -12,24 +12,24 @@ from transformers import (
 )
 
 
-def read_dataset():
-    food = load_dataset("mnist", split="train[:5000]")
-    food = food.train_test_split(test_size=0.2)
+def read_dataset(size = 5000):
+    mnist = load_dataset("mnist", split=f"train[:{size}]")
+    mnist = mnist.train_test_split(test_size=0.2)
 
-    labels = food["train"].features["label"].names
+    labels = mnist["train"].features["label"].names
     label2id, id2label = dict(), dict()
     for i, label in enumerate(labels):
         label2id[label] = str(i)
         id2label[str(i)] = label
 
-    return food, labels, label2id, id2label
+    return mnist, labels, label2id, id2label
 
 def get_model():
     checkpoint = "google/vit-base-patch16-224-in21k"
     image_processor = AutoImageProcessor.from_pretrained(checkpoint)
     return checkpoint, image_processor
 
-def process_dataset(food):
+def process_dataset(mnist):
     checkpoint, image_processor = get_model()
     normalize = Normalize(mean=image_processor.image_mean, std=image_processor.image_std)
     size = (
@@ -44,16 +44,12 @@ def process_dataset(food):
         del examples["image"]
         return examples
 
-    food = food.with_transform(transforms)
+    mnist = mnist.with_transform(transforms)
 
-    return food
+    return mnist
 
 def compute_metrics(eval_pred):
     accuracy = evaluate.load("accuracy")
-    precision = evaluate.load('precision')
-    recall = evaluate.load('recall')
-    f1 = evaluate.load('f1')
-
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
     acc = accuracy.compute(predictions=predictions, references=labels)
@@ -62,9 +58,9 @@ def compute_metrics(eval_pred):
 
 
 def training():
-    food, labels, label2id, id2label = read_dataset()
+    mnist, labels, label2id, id2label = read_dataset()
     checkpoint, image_processor = get_model()
-    dataset = process_dataset(food)
+    dataset = process_dataset(mnist)
     data_collator = DefaultDataCollator()
 
     model = AutoModelForImageClassification.from_pretrained(
