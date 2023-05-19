@@ -1,6 +1,7 @@
 train_example:
 	export WANDB_PROJECT=classification_example
-	python3 classification/cli.py training
+	python3 classification/cli.py load-mnist-data ./data
+	python3 classification/cli.py training ./conf/config.json
 
 upload_example:
 	python3 classification/cli.py upload-to-registry classification_example classification/my_classification_model/checkpoint-10/ classification_example
@@ -16,3 +17,9 @@ test_data:
 
 test_model:
 	pytest --disable-warnings -ss ./tests/test_model.py
+
+load_data:
+	python3 classification/cli.py load-mnist-data ./data
+
+data_inference:
+	python3 classification/cli.py run-inference-on-dataframe ./data/test.csv classification/my_classification_model/checkpoint-10/ ./data/result.csv
