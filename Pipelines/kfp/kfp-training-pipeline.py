@@ -19,7 +19,7 @@ def classification_traininig_pipeline():
         name="load_data",
         command="python classification/cli.py load-mnist-data /tmp/data/".split(),
         image=IMAGE,
-        file_outputs={"train": "/tmp/data/train.csv", "val": "/tmp/data/val.csv", "test": "/tmp/data/test.csv"},
+        file_outputs={"train": "/data/train.csv", "val": "/data/val.csv", "test": "/data/test.csv"},
     )
     load_data.execution_options.caching_strategy.max_cache_staleness = "P0D"
 
@@ -28,9 +28,9 @@ def classification_traininig_pipeline():
         command="python classification/cli.py training".split(),
         image=IMAGE,
         artifact_argument_paths=[
-            dsl.InputArgumentPath(load_data.outputs["train"], path="/tmp/data/train.csv"),
-            dsl.InputArgumentPath(load_data.outputs["val"], path="/tmp/data/val.csv"),
-            dsl.InputArgumentPath(load_data.outputs["test"], path="/tmp/data/test.csv"),
+            dsl.InputArgumentPath(load_data.outputs["train"], path="/data/train.csv"),
+            dsl.InputArgumentPath(load_data.outputs["val"], path="/data/val.csv"),
+            dsl.InputArgumentPath(load_data.outputs["test"], path="/data/test.csv"),
         ],
         file_outputs={
             "config": "/tmp/results/config.json",

@@ -1,4 +1,3 @@
-
 1. Create kind cluster 
 
 ``kind create cluster --name kubeflow-pipelines-standalone``
