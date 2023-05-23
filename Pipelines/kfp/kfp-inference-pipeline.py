@@ -41,7 +41,7 @@ def classification_inference_pipeline():
 
     run_inference = dsl.ContainerOp(
         name="run_inference",
-        command="python nlp_sample/cli.py run-inference-on-dataframe /tmp/data/test.csv /tmp/results/ /tmp/pred.csv".split(),
+        command="python nlp_sample/cli.py run-inference-on-dataframe /data/test.csv /tmp/results/ /tmp/pred.csv".split(),
         image=IMAGE,
         artifact_argument_paths=
         [
