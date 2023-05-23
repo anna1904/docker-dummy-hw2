@@ -1,5 +1,4 @@
 import datasets
-from datasets import load_dataset
 import evaluate
 import numpy as np
 import wandb
