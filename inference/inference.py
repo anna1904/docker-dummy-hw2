@@ -1,28 +1,24 @@
 import numpy as np
-from sklearn.dummy import DummyClassifier
 import concurrent.futures
 from typing import Tuple
-import time
 from tqdm import tqdm
-from concurrent.futures import wait
 import time
-import typer
 import ray
-# from dask.distributed import Client
 import seaborn as sns
-from sklearn.linear_model import LinearRegression
 import dask
 import dask.distributed as dd
+from sklearn import svm
 
 
-def train_model(x_train: np.ndarray, y_train: np.ndarray) -> DummyClassifier:
 
-    model = LinearRegression()
+def train_model(x_train: np.ndarray, y_train: np.ndarray) -> svm:
+
+    model = svm.SVR()
     model.fit(x_train, y_train)
     return model
 
 
-def get_data(inference_size: int = 100_000_000) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_data(inference_size: int = 10000000) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     tips_dataset = sns.load_dataset("tips")
     x_train = tips_dataset["total_bill"].values.reshape(-1, 1)
     y_train = tips_dataset["tip"].values.reshape(-1, 1)
@@ -34,17 +30,11 @@ def get_data(inference_size: int = 100_000_000) -> Tuple[np.ndarray, np.ndarray,
     return x_train, y_train, x_test
 
 
-def predict(model: DummyClassifier, x: np.ndarray) -> np.ndarray:
-    # replace with real model
-
-    # dim = 150
-    # np.linalg.inv(np.random.rand(dim * dim).reshape((dim, dim)))
-
-    # time.sleep(0.002)
+def predict(model: svm, x: np.ndarray) -> np.ndarray:
     return model.predict(x)
 
 #
-def run_inference(model: DummyClassifier, x_test: np.ndarray, batch_size: int = 2048) -> np.ndarray:
+def run_inference(model: svm, x_test: np.ndarray, batch_size: int = 2048) -> np.ndarray:
     y_pred = []
     for i in tqdm(range(0, x_test.shape[0], batch_size)):
         x_batch = x_test[i: i + batch_size]
@@ -52,7 +42,7 @@ def run_inference(model: DummyClassifier, x_test: np.ndarray, batch_size: int = 
         y_pred.append(y_batch)
     return np.concatenate(y_pred)
 
-def run_inference_process_pool(model: DummyClassifier, x_test: np.ndarray, max_workers: int = 2) -> np.ndarray:
+def run_inference_process_pool(model: svm, x_test: np.ndarray, max_workers: int = 16) -> np.ndarray:
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         chunk_size = len(x_test) // max_workers
 
@@ -70,10 +60,10 @@ def run_inference_process_pool(model: DummyClassifier, x_test: np.ndarray, max_w
     return np.concatenate(y_pred)
 
 @ray.remote
-def run_inference_chunk(model: DummyClassifier, x_test_chunk: np.ndarray) -> np.ndarray:
+def run_inference_chunk(model: svm, x_test_chunk: np.ndarray) -> np.ndarray:
     return run_inference(model, x_test_chunk)
 
-def run_inference_process_pool_ray(model: DummyClassifier, x_test: np.ndarray, max_workers: int = 2) -> np.ndarray:
+def run_inference_process_pool_ray(model: svm, x_test: np.ndarray, max_workers: int = 16) -> np.ndarray:
     ray.init(num_cpus=max_workers)
 
     # Split the test data into chunks
@@ -92,7 +82,7 @@ def run_inference_process_pool_ray(model: DummyClassifier, x_test: np.ndarray, m
 
     return np.concatenate(y_pred)
 
-def run_inference_process_pool_dask(model: DummyClassifier, x_test: np.ndarray, max_workers: int = 2) -> np.ndarray:
+def run_inference_process_pool_dask(model: svm, x_test: np.ndarray, max_workers: int = 16) -> np.ndarray:
     batch_size = len(x_test) // max_workers
     cluster = dd.LocalCluster(processes=True, threads_per_worker=1, n_workers=max_workers)
     client = dd.Client(cluster)
@@ -116,7 +106,7 @@ def run():
     model = train_model(x_train, y_train)
     ways = ['simple', 'batch', 'pool', 'ray', 'dask']
     for way in ways:
-        start_save = time.time()
+        start_save = time.monotonic()
         if way == 'simple':
             predict(model, x_test)
         if way == 'batch':
@@ -128,7 +118,7 @@ def run():
         if way == 'dask':
             run_inference_process_pool_dask(model, x_test)
 
-        end_save = time.time()
+        end_save = time.monotonic()
         process_time = end_save - start_save
         print(f"{way} - process time: {process_time:.6f}")
 
