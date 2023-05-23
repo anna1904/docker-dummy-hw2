@@ -73,7 +73,6 @@ def training(config_path: Path):
     data_args = get_config(config_path)
     mnist, labels, label2id, id2label = read_dataset(data_args)
     checkpoint, image_processor = get_model()
-    # print('dataset', mnist)
     dataset = process_dataset(mnist)
     dataset = dataset.train_test_split(0.001)
     data_collator = DefaultDataCollator()
@@ -88,16 +87,16 @@ def training(config_path: Path):
 
     wandb.init(
         project="classification_example",
-        name="test_23-05-1",
+        name="test_23-05",
         config={
-            "epochs": 10,
+            "epochs": 5,
         })
 
     training_args = TrainingArguments(
         output_dir="my_classification_model",
         remove_unused_columns=False,
         evaluation_strategy="epoch",
-        save_strategy="epoch",
+        save_strategy="no",
         learning_rate=5e-05,
         per_device_train_batch_size=32,
         gradient_accumulation_steps=1,
@@ -106,12 +105,7 @@ def training(config_path: Path):
         metric_for_best_model="accuracy",
         push_to_hub=False,
         report_to="wandb",
-        # max_steps=2,
-        logging_steps=1,  # we will log every 100 steps
-        # eval_steps=1,  # we will perform evaluation every 1 steps
-        # eval_accumulation_steps=1,  # report evaluation results after each step
-        load_best_model_at_end=True,
-        # save_steps=1,
+        logging_steps=100,
         do_eval=True,
         weight_decay=0)
 

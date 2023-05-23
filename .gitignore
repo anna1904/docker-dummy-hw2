@@ -1,7 +1,7 @@
 .idea
-/classification/classification/my_classification_model/
-/classification/classification/wandb/
 /Labeling/
 /dataset/
 /.dvc/
 /Data_storage/
+/classification/my_classification_model/
+/classification/wandb/
