@@ -1,5 +1,5 @@
 import datasets
-import evaluate
+from datasets import load_metric
 import numpy as np
 import wandb
 from torchvision.transforms import RandomResizedCrop, Compose, Normalize, ToTensor
@@ -60,12 +60,8 @@ def process_dataset(dataset):
 
 
 def compute_metrics(eval_pred):
-    accuracy = evaluate.load("accuracy")
-    predictions, labels = eval_pred
-    predictions = np.argmax(predictions, axis=1)
-    acc = accuracy.compute(predictions=predictions, references=labels)
-    # wandb.log({"my_accuracy": acc})
-    return acc
+    metric = load_metric("accuracy")
+    return metric.compute(predictions=np.argmax(eval_pred.predictions, axis=1), references=eval_pred.label_ids)
 
 
 def training(config_path: Path):
@@ -97,9 +93,9 @@ def training(config_path: Path):
         evaluation_strategy="epoch",
         save_strategy="no",
         learning_rate=5e-05,
-        per_device_train_batch_size=32,
+        per_device_train_batch_size=10,
         gradient_accumulation_steps=1,
-        per_device_eval_batch_size=32,
+        per_device_eval_batch_size=10,
         num_train_epochs=wandb.config.epochs,
         metric_for_best_model="accuracy",
         push_to_hub=False,

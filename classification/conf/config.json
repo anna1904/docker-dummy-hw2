@@ -1,0 +1,4 @@
+{
+  "train_file": "./data/train.ds",
+  "evaluation_file": "./data/test.ds"
+}

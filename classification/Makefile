@@ -22,4 +22,4 @@ load_data:
 	python3 classification/cli.py load-mnist-data ./data
 
 data_inference:
-	python3 classification/cli.py run-inference-on-dataframe ./data/test.csv my_classification_model/ ./data/result.csv
+	python3 classification/cli.py run-inference-on-ds ./data/test.ds my_classification_model/ ./tmp/result

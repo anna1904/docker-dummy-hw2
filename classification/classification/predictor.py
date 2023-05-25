@@ -1,8 +1,6 @@
 import logging
 
 import datasets
-from sklearn.model_selection import train_test_split
-from transformers import pipeline
 
 from transformers import (
     AutoImageProcessor,
@@ -13,8 +11,6 @@ from transformers import (
 from pathlib import Path
 import pandas as pd
 from transformers import pipeline
-
-from tqdm import tqdm
 
 logger = logging.getLogger()
 

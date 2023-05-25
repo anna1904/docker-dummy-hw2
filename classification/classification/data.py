@@ -1,9 +1,6 @@
 from pathlib import Path
 
 from datasets import load_dataset
-from datasets.arrow_reader import ArrowReader
-from sklearn.model_selection import train_test_split
-import pandas as pd
 
 
 def load_mnist_data(path_to_save: Path):

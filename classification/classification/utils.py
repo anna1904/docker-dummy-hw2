@@ -1,5 +1,3 @@
-import os
-
 import wandb
 from pathlib import Path
 
