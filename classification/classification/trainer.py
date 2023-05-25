@@ -61,7 +61,8 @@ def process_dataset(dataset):
 
 def compute_metrics(eval_pred):
     metric = load_metric("accuracy")
-    return metric.compute(predictions=np.argmax(eval_pred.predictions, axis=1), references=eval_pred.label_ids)
+    return {'accuracy': metric.compute(predictions=np.argmax(eval_pred.predictions, axis=1),
+                                       references=eval_pred.label_ids)}
 
 
 def training(config_path: Path):
@@ -83,14 +84,16 @@ def training(config_path: Path):
     wandb.init(
         project="classification_example",
         name="test_23-05",
+        dir="/tmp",
         config={
-            "epochs": 5,
+            "epochs": 1,
         })
 
     training_args = TrainingArguments(
-        output_dir="my_classification_model",
+        output_dir="/tmp/model",
         remove_unused_columns=False,
         evaluation_strategy="epoch",
+        logging_strategy="epoch",
         save_strategy="no",
         learning_rate=5e-05,
         per_device_train_batch_size=10,
@@ -100,7 +103,7 @@ def training(config_path: Path):
         metric_for_best_model="accuracy",
         push_to_hub=False,
         report_to="wandb",
-        logging_steps=100,
+        # logging_steps=100,
         do_eval=True,
         weight_decay=0)
 
@@ -125,5 +128,4 @@ def training(config_path: Path):
     # Evaluation
     metrics = trainer.evaluate(eval_dataset=dataset["test"])
     metrics["eval_samples"] = len(dataset["test"])
-    trainer.log_metrics("eval", metrics)
     trainer.save_metrics("eval", metrics)

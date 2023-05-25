@@ -1,23 +1,16 @@
-import logging
-
 import datasets
 
 from transformers import (
-    AutoImageProcessor,
     AutoModelForImageClassification,
-    AutoTokenizer
 )
 
 from pathlib import Path
 import pandas as pd
 from transformers import pipeline
 
-logger = logging.getLogger()
-
 
 class Predictor:
     def __init__(self, model_load_path: str):
-        self.image_processor = AutoImageProcessor.from_pretrained(model_load_path)
         self.model = AutoModelForImageClassification.from_pretrained(model_load_path)
         self.classifier = pipeline("image-classification", model=model_load_path)
 

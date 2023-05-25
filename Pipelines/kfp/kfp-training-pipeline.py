@@ -9,8 +9,6 @@ from kfp import dsl
 from kubernetes.client.models import V1EnvVar
 
 IMAGE = "anko47/classification-app:latest"
-WANDB_PROJECT = os.getenv("WANDB_PROJECT")
-WANDB_API_KEY = os.getenv("WANDB_API_KEY")
 
 
 @dsl.pipeline(name="classification_traininig_pipeline", description="classification_traininig_pipeline")
@@ -32,21 +30,22 @@ def classification_traininig_pipeline():
             dsl.InputArgumentPath(load_data.outputs["test"], path="/tmp/data/test.ds"),
         ],
         file_outputs={
-            "config": "/tmp/results/config.json",
-            "model": "/tmp/results/pytorch_model.bin",
-            "all_results": "/tmp/results/all_results.json",
-            "preprocessor_config": "/tmp/results/preprocessor_config.json",
-            "eval_results": "/tmp/results/eval_results.json",
-            "train_results": "/tmp/results/train_results.json",
-            "trainer_state": "/tmp/results/trainer_state.json",
-            "training_args": "/tmp/results/training_args.bin"
+            "config": "/tmp/model/config.json",
+            "model": "/tmp/model/pytorch_model.bin",
+            "all_results": "/tmp/model/all_results.json",
+            "preprocessor_config": "/tmp/model/preprocessor_config.json",
+            "eval_results": "/tmp/model/eval_results.json",
+            "train_results": "/tmp/model/train_results.json",
+            "trainer_state": "/tmp/model/trainer_state.json",
+            "training_args": "/tmp/model/training_args.bin"
         },
     )
     train_model.set_memory_request('2G').set_memory_limit('4G').set_cpu_request('4').set_cpu_limit('8')
 
     upload_model = dsl.ContainerOp(
-        name="upload_model ",
-        command="python classification/cli.py upload-to-registry classification_example /tmp/results WANDB_PROJECT".split(),
+        name="upload_model",
+        command="python classification/cli.py upload-to-registry classification_example /tmp/results "
+                "classification_example".split(),
         image=IMAGE,
         artifact_argument_paths=[
             dsl.InputArgumentPath(train_model.outputs["config"], path="/tmp/results/config.json"),
@@ -57,9 +56,12 @@ def classification_traininig_pipeline():
             dsl.InputArgumentPath(
                 train_model.outputs["eval_results"], path="/tmp/results/eval_results.json"
             ),
-            dsl.InputArgumentPath(train_model.outputs["train_results"], path="/tmp/results/train_results.json"),
-            dsl.InputArgumentPath(train_model.outputs["trainer_state"], path="/tmp/results/trainer_state.json"),
-            dsl.InputArgumentPath(train_model.outputs["training_args"], path="/tmp/results/training_args.bin"),
+            dsl.InputArgumentPath(train_model.outputs["train_results"],
+                                  path="/tmp/results/train_results.json"),
+            dsl.InputArgumentPath(train_model.outputs["trainer_state"],
+                                  path="/tmp/results/trainer_state.json"),
+            dsl.InputArgumentPath(train_model.outputs["training_args"],
+                                  path="/tmp/results/training_args.bin"),
         ],
     )
 
