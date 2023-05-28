@@ -1,0 +1,14 @@
+FROM armswdev/pytorch-arm-neoverse:r23.05-torch-2.0.0-openblas
+
+WORKDIR /app
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+ENV PYTHONPATH /app
+COPY . .
+
+CMD [ "bash" ]

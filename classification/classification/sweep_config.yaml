@@ -1,0 +1,14 @@
+program: trainer.py
+method: bayes
+metric:
+  name: validation_loss
+  goal: minimize
+parameters:
+  learning_rate:
+    min: 0.09
+    max: 0.1
+  optimizer:
+    values: ["adam"]
+  batch_size:
+    min: 8
+    max: 9
