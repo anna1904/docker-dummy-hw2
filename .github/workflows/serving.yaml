@@ -28,6 +28,6 @@ jobs:
           file: week-5/Dockerfile
           push: true
           target: app-streamlit
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-streamlit:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-streamlit:latest
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-streamlit:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-streamlit:buildcache,mode=max
