@@ -24,8 +24,8 @@ jobs:
       - name: Build app streamlit
         uses: docker/build-push-action@v2
         with:
-          context: week-5/
-          file: week-5/Dockerfile
+          context: Serving/
+          file: Serving/Dockerfile
           push: true
           target: app-streamlit
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-streamlit:latest
