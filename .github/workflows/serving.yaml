@@ -39,7 +39,7 @@ jobs:
           file: Serving/Dockerfile
           push: true
           target: app-fastapi
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/app-fastapi:buildcache,mode=max
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:buildcache,mode=max
 
