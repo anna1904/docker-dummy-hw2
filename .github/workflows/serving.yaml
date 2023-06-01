@@ -1,4 +1,4 @@
-name: week-5-ci
+name: serving-ci
 
 on:
   push:
@@ -42,4 +42,8 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:latest
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:buildcache,mode=max
+      - name: Test FastAPI server
+        run: |
+          export WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}
+          docker run ${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:latest pytest -ss ./tests
 
