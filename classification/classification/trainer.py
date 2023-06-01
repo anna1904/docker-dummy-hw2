@@ -90,7 +90,7 @@ def training(config_path: Path):
         })
 
     training_args = TrainingArguments(
-        output_dir="/tmp/model",
+        output_dir="/tmp/model/model",
         remove_unused_columns=False,
         evaluation_strategy="epoch",
         logging_strategy="epoch",
