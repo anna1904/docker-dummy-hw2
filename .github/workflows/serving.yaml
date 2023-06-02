@@ -73,7 +73,7 @@ jobs:
 
       - name: Deploy application
         run: |
-          kubectl create -f k8s/app-fastapi.yaml
+          kubectl create -f Serving/k8s/app-fastapi.yaml
 
       - name: Print pods
         run: |
