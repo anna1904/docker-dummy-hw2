@@ -13,3 +13,5 @@ great-expectations==0.15.25
 pytest-cov==3.0.0
 python-multipart
 seldon-core==1.14.1
+kserve==0.10.1
+ray==2.0.0

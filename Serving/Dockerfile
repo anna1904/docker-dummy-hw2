@@ -9,9 +9,6 @@ RUN pip install pip --upgrade
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-RUN pip install kserve==0.10.1 ray==2.0.0
-
-
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 ENV PYTHONPATH /app
