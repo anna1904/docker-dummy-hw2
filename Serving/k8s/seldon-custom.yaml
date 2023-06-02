@@ -35,3 +35,5 @@ spec:
         type: MODEL
       name: model
       replicas: 1
+      annotations:
+        seldon.io/upload-support: "true"

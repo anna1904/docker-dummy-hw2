@@ -9,9 +9,7 @@ wandb==0.13.3
 black==22.3.0
 isort==5.10.1
 flake8==5.0.4
-great-expectations==0.15.25
+great-expectations
 pytest-cov==3.0.0
 python-multipart
 seldon-core==1.14.1
-kserve==0.10.1
-ray==2.0.0
