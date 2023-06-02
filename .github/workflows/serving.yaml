@@ -44,6 +44,5 @@ jobs:
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:buildcache,mode=max
       - name: Test FastAPI server
         run: |
-          export WANDB_API_KEY=${{ secrets.WANDB_API_KEY }}
-          docker run ${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:latest pytest -ss ./tests
+          docker run -e WANDB_API_KEY=${{ secrets.WANDB_API_KEY }} ${{ secrets.DOCKERHUB_USERNAME }}/app-fastapi:latest pytest -ss ./tests
 
