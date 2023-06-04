@@ -43,3 +43,7 @@ RUN mkdir /.config
 RUN chmod 777 /.config
 
 CMD exec seldon-core-microservice $MODEL_NAME --service-type $SERVICE_TYPE
+
+FROM base AS app-kserve
+
+ENTRYPOINT ["python", "serving/kserve_api.py"]
