@@ -1,6 +1,6 @@
 .idea
 /Labeling/
-/dataset/
+/classification/dataset/
 /.dvc/
 /Data_storage/
 /classification/my_classification_model/

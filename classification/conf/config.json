@@ -1,4 +1,4 @@
 {
-  "train_file": "./data/train.ds",
-  "evaluation_file": "./data/test.ds"
+  "train_dir": "/Users/anko/Development/Projector/docker-dummy-hw2/classification/dataset/russia/russia/",
+  "evaluation_dir": "./data/test.ds"
 }

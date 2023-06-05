@@ -3,6 +3,9 @@ train_example:
 	python3 classification/cli.py load-mnist-data ./data
 	python3 classification/cli.py training ./conf/config.json
 
+train_coursework:
+	python3 classification/cli.py training ./conf/config.json
+
 upload_model:
 	python3 classification/cli.py upload-to-registry classification_example my_classification_model classification_example
 
