@@ -22,7 +22,7 @@ test_model:
 	pytest --disable-warnings -ss ./tests/test_model.py
 
 load_data:
-	python3 classification/cli.py load-mnist-data ./data
+	python3 classification/cli.py load-data ./data
 
 data_inference:
 	python3 classification/cli.py run-inference-on-ds ./data/test.ds my_classification_model/ ./tmp/result

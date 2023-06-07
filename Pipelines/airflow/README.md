@@ -19,4 +19,7 @@ airflow standalone``
 8. Run dags
 
 Note: In Kuberflow pipelines you created Minio where you put your data and transfer,
-here you create volumes in kubernetes 
+here you create volumes in kubernetes
+
+9. Add secrets
+   ``airflow connections add my_secret --conn-uri 'your_secret_value'``
