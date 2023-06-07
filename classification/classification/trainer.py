@@ -105,14 +105,14 @@ def training(config_path: Path):
         project="classification-losses",
         dir="/tmp",
         config={
-            "epochs": 2,
+            "epochs": 10,
         })
     # Specify the output directory for saving the model
-    output_dir = "./model-losses"  # Use a directory in your local file system
-    os.makedirs(output_dir, exist_ok=True)
+    # output_dir = "./model-losses"  # Use a directory in your local file system
+    # os.makedirs(output_dir, exist_ok=True)
 
     training_args = TrainingArguments(
-        output_dir="output_dir",
+        output_dir="/tmp/model/model",
         remove_unused_columns=False,
         evaluation_strategy="epoch",
         logging_strategy="epoch",
@@ -152,6 +152,3 @@ def training(config_path: Path):
     metrics = trainer.evaluate(eval_dataset=eval_dataset)
     metrics["eval_samples"] = len(eval_dataset)
     trainer.save_metrics("eval", metrics)
-
-
-training(Path('/Users/anko/Development/Projector/docker-dummy-hw2/classification/conf/config.json'))

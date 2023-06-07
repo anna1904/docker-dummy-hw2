@@ -28,5 +28,3 @@ def run_inference_on_ds(ds_path: Path, model_load_path: Path, result_path: Path)
         correct_label.append(conf)
     correct_label = pd.DataFrame(correct_label)
     correct_label.to_csv(result_path, index=False)
-
-# run_inference_on_ds(Path('./../data/train.ds'), Path('./../my_classification_model'), Path('result/'))

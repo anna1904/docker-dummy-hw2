@@ -3,7 +3,7 @@ from pathlib import Path
 from datasets import load_dataset
 
 
-def load_mnist_data(path_to_save: Path):
+def load_data(path_to_save: Path):
     path_to_save.mkdir(parents=True, exist_ok=True)
     dataset = load_dataset("mnist", split="train[:500]")
     test_dataset = load_dataset("mnist", split="test")

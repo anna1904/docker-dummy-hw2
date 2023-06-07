@@ -1,13 +1,13 @@
 train_example:
-	export WANDB_PROJECT=classification_example
-	python3 classification/cli.py load-mnist-data ./data
+	export WANDB_PROJECT=classification-losses
+	python3 classification/cli.py load-data ./data
 	python3 classification/cli.py training ./conf/config.json
 
 train_coursework:
 	python3 classification/cli.py training ./conf/config.json
 
 upload_model:
-	python3 classification/cli.py upload-to-registry classification_example my_classification_model classification_example
+	python3 classification/cli.py upload-to-registry classification-losses my_classification_model classification-losses
 
 test:
 	pytest --disable-warnings ./tests/
