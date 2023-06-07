@@ -1,4 +1,5 @@
 import datasets
+import torch
 from datasets import load_metric
 import os
 from torchvision.datasets.folder import ImageFolder
@@ -18,6 +19,8 @@ from transformers import (
 )
 from config import DataTrainingArguments
 
+MANUAL_SEED = 42
+
 
 def get_config(config_path: Path):
     parser = HfArgumentParser(DataTrainingArguments)
@@ -26,13 +29,13 @@ def get_config(config_path: Path):
 
 
 def read_dataset(data_args: DataTrainingArguments):
-    # mnist = datasets.load_from_disk(data_args.train_file)
     dataset = load_dataset("imagefolder", data_dir=data_args.train_dir)
+    dataset = dataset.shuffle(seed=MANUAL_SEED)
     labels = dataset.unique("label")
     label2id, id2label = dict(), dict()
-    for i, label in enumerate(labels):
-        label2id[label] = str(i)
-        id2label[str(i)] = label
+    for i in labels["train"]:
+        label2id[f"{i}_label"] = i
+        id2label[i] = f"{i}_label"
 
     return dataset, labels, label2id, id2label
 
@@ -55,7 +58,6 @@ def process_dataset(dataset):
 
     def transforms(examples):
         examples["pixel_values"] = [_transforms(img.convert("RGB")).float() for img in examples["image"]]
-        examples["label"] = [float(examples["label"][0])]
         del examples["image"]
         return examples
 
@@ -78,13 +80,14 @@ def compute_metrics(eval_pred):
 
 
 def training(config_path: Path):
+    torch.manual_seed(MANUAL_SEED)
     data_args = get_config(config_path)
     dataset, labels, label2id, id2label = read_dataset(data_args)
     checkpoint, image_processor = get_model()
     dataset = process_dataset(dataset['train'])
 
     # Split dataset into train and evaluation sets
-    train_size = int(len(dataset) * 0.8)  # Adjust the split ratio as needed
+    train_size = int(len(dataset) * 0.9)  # Adjust the split ratio as needed
     eval_size = len(dataset) - train_size
     train_dataset, eval_dataset = random_split(dataset, [train_size, eval_size])
 
@@ -92,7 +95,7 @@ def training(config_path: Path):
 
     model = AutoModelForImageClassification.from_pretrained(
         checkpoint,
-        num_labels=len(labels),
+        num_labels=len(labels["train"]),
         id2label=id2label,
         label2id=label2id,
         ignore_mismatched_sizes=True,
@@ -102,7 +105,7 @@ def training(config_path: Path):
         project="classification-losses",
         dir="/tmp",
         config={
-            "epochs": 10,
+            "epochs": 2,
         })
     # Specify the output directory for saving the model
     output_dir = "./model-losses"  # Use a directory in your local file system
