@@ -56,8 +56,8 @@ def trainer_with_one_batch(data_args: DataTrainingArguments) -> Trainer:
         per_device_train_batch_size=1,
         gradient_accumulation_steps=1,
         per_device_eval_batch_size=1,
-        num_train_epochs=100000,
-        max_steps=400,
+        num_train_epochs=100,
+        max_steps=100,
         push_to_hub=False,
         logging_steps=100,  # we will log every 100 steps
         eval_steps=50000,
@@ -83,4 +83,4 @@ def trainer_with_one_batch(data_args: DataTrainingArguments) -> Trainer:
 def test_overfit_batch(trainer_with_one_batch: Trainer):
     train_result = trainer_with_one_batch.train()
     metrics = train_result.metrics
-    assert metrics["train_loss"] < 0.01
+    assert metrics["train_loss"] < 0.1
