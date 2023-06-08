@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: classification
-          file: classification/Dockerfile_mac
+          file: classification/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_MAIN_NAME }}:${{ env.IMAGE_MAIN_TAG }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_MAIN_NAME }}:buildcache
