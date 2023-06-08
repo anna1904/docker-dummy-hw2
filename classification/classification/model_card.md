@@ -1,19 +1,22 @@
 ---
 language: en
-license: MIT
-name: MNIST Image Classification
+name: Image Classification for war losses
 model_type: image-classification
 dataset_tags:
-- mnist
-model_tags:
+
+- images
+- losses
+- war
+  model_tags:
 - vit
+- transformer
+- huggingface
+
 ---
 
-# Model Card for mnist-image-classification-vit
+# Model Card for losses-image-classification-vit
 
 <!-- Provide a quick summary of what the model is/does. -->
-
-
 
 ## Model Details
 
@@ -21,22 +24,22 @@ model_tags:
 
 <!-- Provide a longer summary of what this model is. -->
 
-Image classification model trained on the MNIST dataset using the ViT (Vision Transformer) architecture.
+The Losses Classification Model is a machine learning model that can analyze images of losses in war and classify them
+into different categories. The dataset used to train the model consists of images of russian losses in the
+russo-Ukrainian War of 2022. This model can assist war experts in classifying images for analytics.
 
-- **Developed by:** [More Information Needed]
-- **Shared by [optional]:** [More Information Needed]
+- **Developed by:** Anna Konovalenko
 - **Model type:** image-classification
-- **Language(s) (NLP):** en
-- **License:** MIT
-- **Finetuned from model [optional]:** [More Information Needed]
+- **Language(s) Python:** en
+- **License:**+
+- **Finetuned from model [optional]: facebook/deit-tiny-patch16-224
 
 ### Model Sources [optional]
 
 <!-- Provide the basic links for the model. -->
 
-- **Repository:** [More Information Needed]
-- **Paper [optional]:** [More Information Needed]
-- **Demo [optional]:** [More Information Needed]
+- **
+  Repository:** https://wandb.ai/projector-team/registry/model?selectionPath=projector-team%2Fmodel-registry%2Fmodel-losses&view=membership&tab=overview&version=v0
 
 ## Uses
 
@@ -46,37 +49,38 @@ Image classification model trained on the MNIST dataset using the ViT (Vision Tr
 
 <!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
 
-[More Information Needed]
+The model can categorise images up to 18 classes.
 
-### Downstream Use [optional]
+The classes are the following:
 
-<!-- This section is for the model use when fine-tuned for a task, or when plugged into a larger ecosystem/app -->
-
-[More Information Needed]
-
-### Out-of-Scope Use
-
-<!-- This section addresses misuse, malicious use, and uses that the model will not work well for. -->
-
-[More Information Needed]
+- Aircraft
+- Armoured_Fighting_Vehicles
+- Armoured_Personnel_Carriers
+- Artillery_Support_Vehicles_And_Equipment
+- Command_Posts_And_Communications_Stations
+- Engineering_Vehicles_And_Equipment
+- Helicopters
+- Infantry_Fighting_Vehicles
+- Infantry_Mobility_Vehicles
+- Mine-Resistant_Ambush_Protected
+- Multiple_Rocket_Launchers
+- Reconnaissance_Unmanned_Aerial_Vehicles
+- Self-Propelled_Anti-Tank_Missile_Systems
+- Self-Propelled_Artillery
+- Surface-To-Air_Missile_Systems
+- Tanks
+- Towed_Artillery
+- Trucks,_Vehicles_and_Jeeps
 
 ## Bias, Risks, and Limitations
 
 <!-- This section is meant to convey both technical and sociotechnical limitations. -->
 
-[More Information Needed]
-
 ### Recommendations
 
 <!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
 
-Users (both direct and downstream) should be made aware of the risks, biases and limitations of the model. More information needed for further recommendations.
-
-## How to Get Started with the Model
-
-Use the code below to get started with the model.
-
-[More Information Needed]
+Users (both direct and downstream) should be made aware of the risks, biases and limitations of the model.
 
 ## Training Details
 
@@ -84,26 +88,31 @@ Use the code below to get started with the model.
 
 <!-- This should link to a Data Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
 
-./train.py
+https://www.kaggle.com/datasets/piterfm/2022-ukraine-russia-war-equipment-losses-oryx
 
-### Training Procedure 
+### Training Procedure
 
 <!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
 
 #### Preprocessing [optional]
 
-[More Information Needed]
-
+The image preprocessing involves a series of steps to prepare the image for further analysis. The initial step is to
+obtain the image processor model and its associated checkpoint. The image is then normalized using the mean and standard
+deviation values provided by the image processor. The size of the image is determined by the height and width specified
+in the image processor. The image is then transformed through a series of operations including random resizing and
+cropping, conversion to a tensor, and final normalization using the previously calculated mean and standard deviation
+values.
 
 #### Training Hyperparameters
 
-- **Training regime:** [More Information Needed] <!--fp32, fp16 mixed precision, bf16 mixed precision, bf16 non-mixed precision, fp16 non-mixed precision, fp8 mixed precision -->
+- **Training
+  regime:** 10
+  epochs <!--fp32, fp16 mixed precision, bf16 mixed precision, bf16 non-mixed precision, fp16 non-mixed precision, fp8 mixed precision -->
 
 #### Speeds, Sizes, Times [optional]
 
-<!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
-
-[More Information Needed]
+The training dataset consists of 5996 images, where 34 images are for evaluation.
+It takes around 1 hour to train the model for these results.
 
 ## Evaluation
 
@@ -113,94 +122,33 @@ Use the code below to get started with the model.
 
 #### Testing Data
 
-<!-- This should link to a Data Card if possible. -->
-
-[More Information Needed]
-
-#### Factors
-
-<!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
-
-[More Information Needed]
+Taken from the same repository.
 
 #### Metrics
 
-<!-- These are the evaluation metrics being used, ideally with a description of why. -->
-
-[More Information Needed]
+Two metrics measure the performance of the model: accuracy and precision.
 
 ### Results
 
-[More Information Needed]
+accuracy: 0.53859
+precision: 0.37624
+eval_runtime: 15.1723
+eval_samples: 596
 
 #### Summary
 
-
-
-## Model Examination [optional]
-
-<!-- Relevant interpretability work for the model goes here -->
-
-[More Information Needed]
-
-## Environmental Impact
-
-<!-- Total emissions (in grams of CO2eq) and additional considerations, such as electricity usage, go here. Edit the suggested text below accordingly -->
-
-Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
-
-- **Hardware Type:** [More Information Needed]
-- **Hours used:** [More Information Needed]
-- **Cloud Provider:** [More Information Needed]
-- **Compute Region:** [More Information Needed]
-- **Carbon Emitted:** [More Information Needed]
-
-## Technical Specifications [optional]
-
-### Model Architecture and Objective
-
-[More Information Needed]
-
-### Compute Infrastructure
-
-[More Information Needed]
-
 #### Hardware
 
-[More Information Needed]
+MacBook Air (M1, 2020), Memory: 16GB
 
-#### Software
-
-[More Information Needed]
-
-## Citation [optional]
+## Citation
 
 <!-- If there is a paper or blog post introducing the model, the APA and Bibtex information for that should go in this section. -->
 
 **BibTeX:**
 
-[More Information Needed]
-
-**APA:**
-
-[More Information Needed]
-
-## Glossary [optional]
-
-<!-- If relevant, include terms and calculations in this section that can help readers understand the model or model card. -->
-
-[More Information Needed]
-
-## More Information [optional]
-
-[More Information Needed]
-
-## Model Card Authors [optional]
-
-[More Information Needed]
-
 ## Model Card Contact
 
-[More Information Needed]
+Anna Konovalenko
 
 
