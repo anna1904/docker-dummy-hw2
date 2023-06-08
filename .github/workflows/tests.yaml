@@ -28,10 +28,6 @@ jobs:
         run: |
           docker build -f classification/Dockerfile -t classification-mnist:latest classification
 
-      - name: Load Data
-        run: |
-          docker run classification-mnist:latest make load_data
-
       - name: Test code
         run: |
           docker run classification-mnist:latest make test_code
