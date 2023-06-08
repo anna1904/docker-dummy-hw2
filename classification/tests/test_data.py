@@ -15,7 +15,7 @@ def mnist_dataset():
 
 @pytest.fixture()
 def data_path() -> Path:
-    return Path("classification/data/")
+    return Path("./data/")
 
 
 @pytest.fixture()

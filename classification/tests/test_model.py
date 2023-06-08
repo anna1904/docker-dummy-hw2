@@ -16,7 +16,7 @@ from classification.config import DataTrainingArguments
 
 @pytest.fixture()
 def data_path() -> Path:
-    return Path("classification/data/")
+    return Path("./data/")
 
 
 @pytest.fixture()
