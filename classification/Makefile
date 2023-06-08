@@ -13,9 +13,11 @@ test_code:
 	pytest --disable-warnings -rc ./tests/test_code.py
 
 test_data:
+    python3 classification/cli.py load-mnist-data ./data
 	pytest --disable-warnings -rc ./tests/test_data.py
 
 test_model:
+    python3 classification/cli.py load-mnist-data ./data
 	pytest --disable-warnings -ss ./tests/test_model.py
 
 load_data:
