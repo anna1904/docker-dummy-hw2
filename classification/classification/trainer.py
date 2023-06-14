@@ -30,7 +30,7 @@ def get_config(config_path: Path):
 
 def read_dataset(data_args: DataTrainingArguments):
     dataset = load_dataset("imagefolder", data_dir=data_args.train_dir)
-    dataset = dataset.shuffle(seed=MANUAL_SEED)
+    # dataset = dataset.shuffle(seed=MANUAL_SEED)
     labels = dataset.unique("label")
     label2id, id2label = dict(), dict()
     for i in labels["train"]:
@@ -152,3 +152,6 @@ def training(config_path: Path):
     metrics = trainer.evaluate(eval_dataset=eval_dataset)
     metrics["eval_samples"] = len(eval_dataset)
     trainer.save_metrics("eval", metrics)
+
+
+training(Path('/Users/anko/Development/Projector/docker-dummy-hw2/classification/conf/config.json'))
