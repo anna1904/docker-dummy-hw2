@@ -1,4 +1,4 @@
-FROM huggingface/transformers-pytorch-gpu:4.22.1 as base
+FROM pytorch/pytorch as base
 
 WORKDIR /app
 
@@ -34,7 +34,8 @@ EXPOSE 9000
 # Define environment variables
 ENV MODEL_NAME SeldonAPI
 ENV SERVICE_TYPE MODEL
-COPY serving/seldon_api.py /app/SeldonAPI.py
+ENV USE_MULTIPROCESS_PACKAGE true
+COPY serving/SeldonAPI.py /app/SeldonAPI.py
 
 RUN chown -R 8888 /app
 RUN mkdir /.cache
@@ -42,7 +43,8 @@ RUN chmod 777 /.cache
 RUN mkdir /.config
 RUN chmod 777 /.config
 
-CMD exec seldon-core-microservice $MODEL_NAME --service-type $SERVICE_TYPE
+
+CMD exec seldon-core-microservice $MODEL_NAME --service-type $SERVICE_TYPE --debug > /tmp/myfancylogs.txt 2>&1
 
 FROM base AS app-kserve
 

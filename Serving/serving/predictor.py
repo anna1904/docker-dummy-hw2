@@ -4,6 +4,13 @@ import wandb
 from filelock import FileLock
 from transformers import AutoImageProcessor, AutoModelForImageClassification, AutoTokenizer
 from transformers import pipeline
+import numpy as np
+from PIL import Image
+import base64
+import requests
+import json
+import numpy
+from io import BytesIO
 
 logger = logging.getLogger()
 
@@ -36,3 +43,18 @@ class Predictor:
                 load_from_registry(model_name=MODEL_ID, model_path=MODEL_PATH, project_name=PROJECT_NAME)
 
         return cls(model_load_path=MODEL_PATH)
+
+# predictor = Predictor.default_from_model_registry()
+
+# with open("assets/img_10.png", "rb") as image_file:
+#     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+#     data = {"data": {"ndarray": [encoded_string]}}
+#     string = base64.b64decode(data['data']['ndarray'])
+#     image_io = BytesIO(string)
+#     pil_image = Image.open(image_io)
+#
+#     result = predictor.predict(pil_image)
+#     print(result)
+#
+# np_img = np.random.randint(low=0, high=255, size=(5, 5), dtype=np.uint8)
+# pil_img = Image.fromarray(np_img)
