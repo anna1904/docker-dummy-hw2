@@ -1,4 +1,4 @@
-FROM pytorch/pytorch as base
+FROM huggingface/transformers-pytorch-gpu:4.22.1 as base
 
 WORKDIR /app
 
@@ -22,30 +22,4 @@ CMD streamlit run --server.address 0.0.0.0 --server.port 8080 serving/ui_app.py
 
 # Fast API docker image
 FROM base AS app-fastapi
-CMD uvicorn --host 0.0.0.0 --port 8080 --workers 4 serving.fast_api:app
-
-FROM base AS app-seldon
-
-# Port for GRPC
-EXPOSE 5000
-# Port for REST
-EXPOSE 9000
-
-# Define environment variables
-ENV MODEL_NAME SeldonAPI
-ENV SERVICE_TYPE MODEL
-ENV USE_MULTIPROCESS_PACKAGE true
-COPY serving/SeldonAPI.py /app/SeldonAPI.py
-
-RUN chown -R 8888 /app
-RUN mkdir /.cache
-RUN chmod 777 /.cache
-RUN mkdir /.config
-RUN chmod 777 /.config
-
-
-CMD exec seldon-core-microservice $MODEL_NAME --service-type $SERVICE_TYPE --debug > /tmp/myfancylogs.txt 2>&1
-
-FROM base AS app-kserve
-
-ENTRYPOINT ["python", "serving/kserve_api.py"]
+CMD uvicorn --host 0.0.0.0 --port 8080 --workers 4 serving.fast_api:app > /tmp/myfancylogs.txt 2>&1
