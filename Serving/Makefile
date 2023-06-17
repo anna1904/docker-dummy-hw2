@@ -1,7 +1,7 @@
 build_app_streamlit:
 	docker build -f Dockerfile -t app-streamlit:latest --target app-streamlit .
 
-run_app_streamlit: build_app_streamlit
+run_app_streamlit:build_app_streamlit
 	docker run -it -p 8081:8080 -e WANDB_API_KEY=${WANDB_API_KEY} app-streamlit:latest
 
 build_fast_api:
@@ -9,3 +9,15 @@ build_fast_api:
 
 run_fast_api: build_fast_api
 	docker run -it -p 8081:8080 -e WANDB_API_KEY=${WANDB_API_KEY} app-fastapi:latest
+
+build_app_seldon:
+	docker build -f Dockerfile -t app-seldon:latest --target app-seldon .
+
+run_app_seldon: build_app_seldon
+	docker run -it -p 8081:8080 -e WANDB_API_KEY=${WANDB_API_KEY} app-seldon:latest
+
+build_kserve:
+	docker build -f Dockerfile -t app-kserve:latest --target app-kserve .
+
+run_kserve:
+	docker run -e PORT=8080 -e WANDB_API_KEY=${WANDB_API_KEY} -p 8081:8080 app-kserve:latest
