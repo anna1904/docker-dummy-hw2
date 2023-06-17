@@ -22,7 +22,3 @@ class PredictUser(HttpUser):
                 files={'image': image_file},
                 headers={"accept": "application/json"}
             )
-
-
-a = PredictUser(HttpUser)
-print(a.predict())
