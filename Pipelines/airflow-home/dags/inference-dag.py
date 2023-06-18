@@ -47,6 +47,22 @@ with DAG(start_date=datetime(2021, 1, 1), catchup=False, schedule_interval=None,
         volumes=[volume],
         volume_mounts=[volume_mount],
     )
+    detect_data_drift = KubernetesPodOperator(
+        name="detect_data_drift",
+        image="anko47/classification-app:latest",
+        cmds=[
+            "python",
+            "classification/cli.py",
+            "detect-data-drift",
+            "/tmp/model/data/test.ds",
+            "/tmp/model/data/detector/detector.pkl",
+        ],
+        task_id="detect_data_drift",
+        in_cluster=False,
+        namespace="default",
+        volumes=[volume],
+        volume_mounts=[volume_mount],
+    )
 
     run_inference = KubernetesPodOperator(
         name="run_inference",

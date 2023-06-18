@@ -11,19 +11,18 @@ from alibi_detect.saving import load_detector
 
 
 class Predictor:
-    def __init__(self, model_load_path: str, detector_path: str):
+    def __init__(self, model_load_path: str):
         self.model = AutoModelForImageClassification.from_pretrained(model_load_path)
         self.classifier = pipeline("image-classification", model=model_load_path)
-        self.detector = load_detector(detector_path)
 
     def predict(self, image):
         return self.classifier(image)
 
 
-def detect_data_drift(ds_path: Path, model_load_path: Path):
-    model = Predictor(model_load_path=model_load_path)
+def detect_data_drift(ds_path: Path, detector_path: Path):
+    detector = load_detector(detector_path)
     dataset = datasets.load_from_disk(ds_path)
-    drift_detected = model.detector.predict(dataset)['data']['is_drift']
+    drift_detected = detector.predict(dataset)['data']['is_drift']
     return drift_detected
 
 
