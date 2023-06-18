@@ -2,12 +2,13 @@ import os
 import numpy as np
 import datasets
 
-from alibi_detect.cd import KernelDensityDrift
+from alibi_detect.cd import KSDrift
 
 import torch
 from torchvision import models, transforms
 from PIL import Image
 from pathlib import Path
+from alibi_detect.saving import save_detector
 
 
 def extract_features(model, image):
@@ -24,29 +25,26 @@ def preprocess_image(image):
     return transform(image).unsqueeze(0)
 
 
-# Example usage:
-reference_folder = datasets.load_from_disk(
-    Path('/Users/anko/Development/Projector/docker-dummy-hw2/classification/data/train.ds'))
-test_image_path = "/Users/anko/Development/Projector/docker-dummy-hw2/Serving/tests/assets/img_10.jpeg"
+def detect_drift(dataset_path, test_image_path, detector_path):
+    reference_dataset = datasets.load_from_disk(dataset_path)
 
-# Load pre-trained classification model
-model = models.resnet50(pretrained=True)
-model.eval()
+    model = models.resnet50(pretrained=True)
+    model.eval()
 
-# Extract features from the reference dataset
-reference_features = extract_features(model, reference_folder)
+    reference_features = []
 
-# Initialize and fit the KernelDensityDrift detector
-detector = KernelDensityDrift(p_val=0.05)
-detector.fit(reference_features)
+    for data in reference_dataset:
+        image = data['image'].convert("RGB")
+        features = extract_features(model, image)
+        reference_features.append(features)
 
-# Load and preprocess the test image
-test_image = Image.open(test_image_path).convert('RGB')
+    reference_features = np.array(reference_features)
+    detector = KSDrift(x_ref=reference_features, p_val=0.05)
+    save_detector(detector, detector_path)
+    test_image = Image.open(test_image_path).convert('RGB')
 
-# Extract features from the test image
-test_features = extract_features(model, test_image)
+    test_features = extract_features(model, test_image).reshape(1, -1)
+    drift_predictions = detector.predict(test_features, return_p_val=True)
 
-# Perform univariate drift detection using the trained detector
-drift_predictions = detector.predict(test_features)
-
-print("Univariate drift detected:", drift_predictions)
+    print(drift_predictions['data']['is_drift'])
+    print(drift_predictions['data']['p_val'])
