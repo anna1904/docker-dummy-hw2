@@ -13,6 +13,8 @@ from transformers import (
     DefaultDataCollator
 )
 from classification.config import DataTrainingArguments
+from alibi_detect.cd import MMDDrift
+from alibi_detect.saving import save_detector, load_detector
 
 
 def get_config(config_path: Path):
@@ -124,6 +126,10 @@ def training(config_path: Path):
     trainer.log_metrics("train", metrics)
     trainer.save_metrics("train", metrics)
     trainer.save_state()
+
+    # Data drift detector
+    detector = MMDDrift(dataset["train"], backend='pytorch', p_val=.05)
+    save_detector(detector, data_args.detector_path)
 
     # Evaluation
     metrics = trainer.evaluate(eval_dataset=dataset["test"])
