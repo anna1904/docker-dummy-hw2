@@ -4,6 +4,13 @@ import wandb
 from filelock import FileLock
 from transformers import AutoImageProcessor, AutoModelForImageClassification, AutoTokenizer
 from transformers import pipeline
+import numpy as np
+from PIL import Image
+import base64
+import requests
+import json
+import numpy
+from io import BytesIO
 
 logger = logging.getLogger()
 

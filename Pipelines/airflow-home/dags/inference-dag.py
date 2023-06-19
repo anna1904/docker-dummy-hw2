@@ -4,12 +4,22 @@ from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import \
     KubernetesPodOperator
 from kubernetes.client import models as k8s
+from airflow.operators.python import BranchPythonOperator
 
 volume = k8s.V1Volume(
     name="inference-storage",
     persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name="inference-storage"),
 )
 volume_mount = k8s.V1VolumeMount(name="inference-storage", mount_path="/tmp/model/", sub_path=None)
+
+
+def detect_data_drift_result(**kwargs):
+    result = kwargs["ti"].xcom_pull(task_ids="detect_data_drift")
+    if result:
+        return "fail_pipeline"
+    else:
+        return "run_inference"
+
 
 with DAG(start_date=datetime(2021, 1, 1), catchup=False, schedule_interval=None, dag_id="inference_dag") as dag:
     clean_storage_before_start = KubernetesPodOperator(
@@ -47,6 +57,22 @@ with DAG(start_date=datetime(2021, 1, 1), catchup=False, schedule_interval=None,
         volumes=[volume],
         volume_mounts=[volume_mount],
     )
+    detect_data_drift = KubernetesPodOperator(
+        name="detect_data_drift",
+        image="anko47/classification-app:latest",
+        cmds=[
+            "python",
+            "classification/cli.py",
+            "detect-data-drift",
+            "/tmp/model/data/test.ds",
+            "/tmp/model/data/detector/detector.pkl",
+        ],
+        task_id="detect_data_drift",
+        in_cluster=False,
+        namespace="default",
+        volumes=[volume],
+        volume_mounts=[volume_mount],
+    )
 
     run_inference = KubernetesPodOperator(
         name="run_inference",
@@ -77,10 +103,28 @@ with DAG(start_date=datetime(2021, 1, 1), catchup=False, schedule_interval=None,
         volume_mounts=[volume_mount],
         trigger_rule="all_done",
     )
+    fail_pipeline = KubernetesPodOperator(
+        name="fail_pipeline",
+        image="anko47/classification-app:latest",
+        cmds=["echo", "Data drift detected. Failing pipeline."],
+        task_id="fail_pipeline",
+        in_cluster=False,
+        namespace="default",
+        volumes=[volume],
+        volume_mounts=[volume_mount],
+        trigger_rule="one_failed",
+    )
 
-    clean_storage_before_start >> load_data
-    clean_storage_before_start >> load_model
+    detect_data_drift_result = BranchPythonOperator(
+        task_id="detect_data_drift_result",
+        python_callable=detect_data_drift_result,
+        provide_context=True,
+    )
 
-    load_data >> run_inference
-    load_model >> run_inference
+    clean_storage_before_start >> [load_data, load_model]
+    load_data >> detect_data_drift
+    load_model >> detect_data_drift
+    detect_data_drift >> detect_data_drift_result
+    detect_data_drift_result >> run_inference
+    detect_data_drift_result >> fail_pipeline
     run_inference >> clean_up

@@ -1,4 +1,5 @@
 {
   "train_file": "/tmp/model/data/train.ds",
-  "evaluation_file": "/tmp/model/data/test.ds"
+  "evaluation_file": "/tmp/model/data/test.ds",
+  "detector_path": "/tmp/model/data/detector"
 }

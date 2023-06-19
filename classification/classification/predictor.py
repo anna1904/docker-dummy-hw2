@@ -7,6 +7,7 @@ from transformers import (
 from pathlib import Path
 import pandas as pd
 from transformers import pipeline
+from alibi_detect.saving import load_detector
 
 
 class Predictor:
@@ -16,6 +17,13 @@ class Predictor:
 
     def predict(self, image):
         return self.classifier(image)
+
+
+def detect_data_drift(ds_path: Path, detector_path: Path):
+    detector = load_detector(detector_path)
+    dataset = datasets.load_from_disk(ds_path)
+    drift_detected = detector.predict(dataset)['data']['is_drift']
+    return drift_detected
 
 
 def run_inference_on_ds(ds_path: Path, model_load_path: Path, result_path: Path):

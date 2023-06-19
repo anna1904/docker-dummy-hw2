@@ -1,0 +1,17 @@
+FROM armswdev/pytorch-arm-neoverse:r23.05-torch-2.0.0-openblas as base
+
+WORKDIR /app
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+ENV PYTHONPATH /app
+COPY . .
+
+CMD [ "bash" ]
+
+FROM base AS app-fastapi
+CMD uvicorn --host 0.0.0.0 --port 8080 --workers 4 serving.fast_api:app > /tmp/myfancylogs.txt 2>&1
