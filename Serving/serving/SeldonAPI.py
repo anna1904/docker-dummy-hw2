@@ -69,12 +69,8 @@ class SeldonAPI:
             self.scores.fn[int(true_value)] += 1
 
         self.scores.accuracy = sum(self.scores.tp) / (sum(self.scores.tp) + sum(self.scores.fp))
-        logger.info(self.scores.accuracy)
 
         for i in range(self.num_classes):
-            logger.info(self.scores.tp[i])
-            logger.info(self.scores.fp[i])
-            logger.info(self.scores.precision[i])
             if (self.scores.tp[i] + self.scores.fp[i]) != 0:
                 self.scores.precision[i] = self.scores.tp[i] / (self.scores.tp[i] + self.scores.fp[i])
             else:
