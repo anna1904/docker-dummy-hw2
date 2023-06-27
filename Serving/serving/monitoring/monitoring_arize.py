@@ -25,7 +25,7 @@ def get_prediction_file():
     return df
 
 
-arize_client = Client(space_key='825f33b', api_key='e87ef574226ce803fdd')
+arize_client = Client(space_key=os.getenv("SPACE_KEY"), api_key=os.getenv("API_KEY"))
 
 schema = Schema(
     prediction_id_column_name="prediction_id",
